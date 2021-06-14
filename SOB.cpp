@@ -102,6 +102,6 @@ int main(){
     }
     cout<<"num of tx in final block "<<included_tx_set.size()<<endl;
     cout<<"total fee in curr block : "<<totalFee<<" total weight : "<<currBlockWeight<<endl;
-    writeOutput(included_tx_vector,"block_greedy.txt");
+    writeOutput(included_tx_vector,"block.txt");
 
 }
