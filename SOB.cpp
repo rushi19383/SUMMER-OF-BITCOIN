@@ -28,3 +28,7 @@ pair<string,TransactionInfo*> initiateTransaction(vector<string>& row){
     return {row[0],ans};
     
 }
+
+void readinput(string fileName,unordered_map<string,TransactionInfo*>& ump){
+    ifstream fin(fileName);
+}
