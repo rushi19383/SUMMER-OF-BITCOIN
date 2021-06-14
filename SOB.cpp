@@ -86,7 +86,7 @@ int main(){
             TransactionInfo* curr_tx = (*itr).second;
             int currFee = curr_tx->fee;
             int currWeight = curr_tx->weight;
-            if(isValidTx(curr_tx,included_tx_set) && currBlockWeight + currWeight <= blockWeight){
+            if(isValidTx(curr_tx,included_tx_set) && currBlockWeight + currWeight <= totalBlockWeight){
                 currBlockWeight += currWeight;
                 included_tx_set.insert(curr_tx->tx_id);
                 included_tx_vector.push_back(curr_tx->tx_id);
