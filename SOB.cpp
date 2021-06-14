@@ -29,8 +29,8 @@ pair<string,TransactionInfo*> initiateTransaction(vector<string>& row){
     
 }
 
-void readinput(string fileName,unordered_map<string,TransactionInfo*>& ump){
-    ifstream fin(fileName);
+void readinput(string input,unordered_map<string,TransactionInfo*>& ump){
+    ifstream fin(input);
     vector<string> row;
     string temp,line,word;
     getline(fin,line);
@@ -67,4 +67,41 @@ void writeOutput(vector<string>& included_tx_vector, string fn){
     for(auto s:included_tx_vector)
     myfile<<s<<endl;
     myfile.close();
+}
+
+int main(){
+    unordered_map<string, TransactionInfo*>ump;
+    readinput(input,ump);
+    set<pair<float,TransactionInfo*>,greater<pair<float,TransactionInfo*>>> tx_set;
+    set<string>included_tx_set;
+    vector<string>included_tx_vector;
+    for(auto p:ump){
+        tx_set.insert({(float)p.second->fee/(float)p.second->weight,p.second});
+    }
+    int currBlockWeight = 0;
+    int totalFee = 0;
+    while(!tx_set.empty() && currBlockWeight<totalBlockWeight){
+        bool found = false;
+        for(auto itr = tx_set.begin();itr != tx_set.end();itr++){
+            TransactionInfo* curr_tx = (*itr).second;
+            int currFee = curr_tx->fee;
+            int currWeight = curr_tx->weight;
+            if(isValidTx(curr_tx,included_tx_set) && currBlockWeight + currWeight <= blockWeight){
+                currBlockWeight += currWeight;
+                included_tx_set.insert(curr_tx->tx_id);
+                included_tx_vector.push_back(curr_tx->tx_id);
+                totalFee += currFee;
+                tx_set.erase(itr);
+                found = true;
+                break;
+            }
+        }
+        // No valid tx  ans found
+        if(!found)
+            break; 
+    }
+    cout<<"num of tx in final block "<<included_tx_set.size()<<endl;
+    cout<<"total fee in curr block : "<<totalFee<<" total weight : "<<currBlockWeight<<endl;
+    writeOutput(included_tx_vector,"block_greedy.txt");
+
 }
